@@ -1,0 +1,7 @@
+.buildlog
+packages/
+out/
+.idea/
+.log
+/lib/config/config.dart
+/test.dart
