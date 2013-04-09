@@ -25,7 +25,7 @@ class Monitor {
       process.stdout.listen((data) {});
       process.stderr.listen((data) {
         var message = new String.fromCharCodes(data);
-        print('Monitor: server "$server" stderr: $data');
+        print('Monitor: server "$server" stderr: $message');
       });
 
       process.exitCode.then((int exitCode) {
