@@ -17,16 +17,16 @@ class Monitor {
       ..workingDirectory = new Path(server).directoryPath.toNativePath();
 
     Process.start(config['dartPath'], ['"$server"'], options).then((process) {
-      print('Superwovisor: server "$server" started.');
+      print('Monitor: server "$server" started.');
 
       process.stdout.listen((data) {});
       process.stderr.listen((data) {});
 
       process.exitCode.then((int exitCode) {
-        print('Superwovisor: server "$server" shut down.');
+        print('Monitor: server "$server" shut down.');
 
         new Timer(const Duration(seconds: 1), (t) => startServer(server));
       });
-    }).catchError((e) => print('Superwovisor: could not start server "$server": $e'));
+    }).catchError((e) => print('Monitor: could not start server "$server": $e'));
   }
 }
