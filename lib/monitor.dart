@@ -22,16 +22,25 @@ class Monitor {
     Process.start(config['dartPath'], [parameter], options).then((process) {
       print('Monitor: server "$server" started.');
 
+      var alreadyInUse = false;
+
       process.stdout.listen((data) {});
       process.stderr.listen((data) {
-        var message = new String.fromCharCodes(data);
+        String message = new String.fromCharCodes(data);
         print('Monitor: server "$server" stderr: $message');
+
+        // Shall do for now.
+        if (message.contains('Failed to create server socket')) {
+          alreadyInUse = true;
+
+          print('The server seems to be running already.');
+        }
       });
 
       process.exitCode.then((int exitCode) {
         print('Monitor: server "$server" shut down.');
 
-        new Timer(const Duration(seconds: 1), (t) => startServer(server));
+        if (alreadyInUse == false) new Timer(const Duration(seconds: 1), (t) => startServer(server));
       });
     }).catchError((e) => print('Monitor: could not start server "$server": $e'));
   }
