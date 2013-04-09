@@ -19,6 +19,9 @@ class Monitor {
     Process.start(config['dartPath'], ['"$server"'], options).then((process) {
       print('Superwovisor: server "$server" started.');
 
+      process.stdout.listen((data) {});
+      process.stderr.listen((data) {});
+
       process.exitCode.then((int exitCode) {
         print('Superwovisor: server "$server" shut down.');
 
