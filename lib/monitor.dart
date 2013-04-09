@@ -16,11 +16,17 @@ class Monitor {
     var options = new ProcessOptions()
       ..workingDirectory = new Path(server).directoryPath.toNativePath();
 
-    Process.start(config['dartPath'], ['"$server"'], options).then((process) {
+    var parameter = server;
+    if (Platform.operatingSystem == 'windows') parameter = '"$server"';
+
+    Process.start(config['dartPath'], [parameter], options).then((process) {
       print('Monitor: server "$server" started.');
 
       process.stdout.listen((data) {});
-      process.stderr.listen((data) {});
+      process.stderr.listen((data) {
+        var message = new String.fromCharCodes(data);
+        print('Monitor: server "$server" stderr: $data');
+      });
 
       process.exitCode.then((int exitCode) {
         print('Monitor: server "$server" shut down.');
