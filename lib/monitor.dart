@@ -1,4 +1,4 @@
-library superwovisor;
+library monitor;
 
 import 'dart:io';
 import 'dart:async';
