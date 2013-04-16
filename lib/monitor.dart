@@ -19,6 +19,8 @@ class Monitor {
     var parameter = server;
     if (Platform.operatingSystem == 'windows') parameter = '"$server"';
 
+    var processStarted = new DateTime.now();
+
     Process.start(config['dartPath'], [parameter], options).then((process) {
       print('Monitor: server "$server" started.');
 
@@ -27,7 +29,7 @@ class Monitor {
       process.stdout.listen((data) {});
       process.stderr.listen((data) {
         String message = new String.fromCharCodes(data);
-        print('Monitor: server "$server" stderr: $message');
+        print('${getStamp()} Monitor: server "$server" stderr: $message');
 
         // Shall do for now.
         if (message.contains('Failed to create server socket')) {
@@ -40,8 +42,14 @@ class Monitor {
       process.exitCode.then((int exitCode) {
         print('Monitor: server "$server" shut down.');
 
-        if (alreadyInUse == false) new Timer(const Duration(seconds: 1), (t) => startServer(server));
+        if (alreadyInUse == false) new Timer(const Duration(seconds: 1), () => startServer(server));
       });
     }).catchError((e) => print('Monitor: could not start server "$server": $e'));
+  }
+
+  String getStamp() {
+    var date = new DateTime.now();
+
+    return '${date.year}-${date.month}-${date.day} ${date.hour}:${date.minute}:${date.second}';
   }
 }
