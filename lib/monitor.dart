@@ -13,17 +13,12 @@ class Monitor {
   }
 
   startServer(String server) {
-    var options = new ProcessOptions()
-      ..workingDirectory = new Path(server).directoryPath.toNativePath();
-
     var parameter = server;
     if (Platform.operatingSystem == 'windows') parameter = '"$server"';
 
     var processStarted = new DateTime.now();
 
-    Process.start(config['dartPath'], [parameter], options).then((process) {
-      print('Monitor: server "$server" started.');
-
+    Process.start(config['dartPath'], [parameter], workingDirectory: new Path(server).directoryPath.toNativePath()).then((process) {
       var alreadyInUse = false;
 
       process.stdout.listen((data) {});
@@ -40,8 +35,6 @@ class Monitor {
       });
 
       process.exitCode.then((int exitCode) {
-        print('Monitor: server "$server" shut down.');
-
         if (alreadyInUse == false) new Timer(const Duration(seconds: 1), () => startServer(server));
       });
     }).catchError((e) => print('Monitor: could not start server "$server": $e'));
